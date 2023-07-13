@@ -27,6 +27,8 @@ def UserShop(request):
     }
     return render(request, 'UserTemp/shop.html',context)
 
+
+
 def productdetail(request,prdetails_id):
     try:
         product = Product.objects.get(id=prdetails_id)
