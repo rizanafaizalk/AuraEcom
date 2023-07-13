@@ -1,0 +1,203 @@
+
+
+
+{% extends 'UserTemp/base.html' %}
+ {% load static %}
+{% block content %} 
+
+</main>
+<div class="card n w-75 mx-auto">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="table-header">Order Date</th>
+            <th class="table-header">Total</th>
+            <th class="table-header">Tracking id</th>
+            <th class="table-header">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in orderlist %}
+          <tr>
+            <td>{{ item.created_at }}</td>
+            <td>{{ item.total_price }}</td>
+            <td>{{ item.tracking_no }}</td>
+            <td>{{ item.status }}</td>
+            {% comment %} <td>{{ item.status }}</td> {% endcomment %}
+            <td>
+              <a href="{% url 'SingleOrdersPage' item.id%}" class="btn btn-outline-primary">View Order Details</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-6 col-md-6 col-sm-6 mt-4">
+    <div class="continue__btn">
+      <a href="">Continue Shopping</a>
+    </div>
+  </div>
+</div>
+</div>
+</section>
+</div>
+</main>
+
+<style>
+  .card {
+    width: 75%;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    background-color: #f8f9fa;
+    color: #333;
+  }
+  
+  .n {
+    width: 82% !important;
+  }
+  
+  .address-info {
+    margin-bottom: 20px;
+  }
+  
+  .order-info {
+    margin-top: 20px;
+  }
+  
+  .table-header {
+    font-weight: bold;
+  }
+  
+  .img {
+    width: fit-content;
+    height: 50px;
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .tracking-button {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #ff8511;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+  }
+  
+  .tracking-button:hover {
+    background-color: #fff;
+  }
+  
+  .pagetitle {
+    background-color: #f8f9fa;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .pagetitle h1 {
+    margin: 20px;
+    font-size: 30px;
+    color: #333;
+  }
+  
+  .breadcrumb {
+    margin: 0;
+    padding: 1px;
+    list-style: none;
+  }
+  
+  .breadcrumb-item {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  
+  .breadcrumb-item a {
+    color: #333;
+    text-decoration: none;
+  }
+  
+  .breadcrumb-item.active {
+    color: #ff8511;
+    font-weight: 300;
+  }
+  
+  /* Custom CSS for the table */
+  
+  .table-responsive {
+    overflow-x: auto;
+  }
+  
+  table {
+   
+
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th,
+  td {
+    padding: 10px;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+  }
+  
+  tr:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .cart__price {
+    font-weight: bold;
+  }
+  
+  .continue__btn {
+    margin-top: 20px;
+  }
+  
+  .continue__btn a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #000;
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .continue__btn a:hover {
+    background-color: #333;
+  }
+  
+    /* ... (existing styles) ... */
+    
+    .continue__btn {
+      margin-top: 20px;
+      text-align: left; /* Align the button to the left */
+    }
+    
+    .continue__btn a {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #000;
+      color: #fff;
+      text-decoration: none;
+      margin-left: 150px; /* Add some left margin for spacing */
+    }
+    
+    .continue__btn a:hover {
+      background-color: #333;
+    }
+  </style>
+  
+      
+    </style>
+
+
+{% endblock %}

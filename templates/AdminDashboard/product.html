@@ -1,0 +1,176 @@
+{% extends 'AdminDashboard/home.html'%}
+{% load static %}
+{% block content %}
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<div class="pagetitle">
+    <h1>Product List</h1>
+        <nav>
+            <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Product</li>
+            </ol>
+        </nav>
+</div><!-- End Page Title -->
+
+  {% if messages %}
+
+  {% for message in messages %}
+
+  <div class="text-center text-danger pt-3"></button>
+      <strong>{{message}}</strong>
+  </div>
+  {% endfor %}
+  {%endif%}
+
+<div class="row">
+    <div class="col-lg-5 col-6">
+        <form action="">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search for products">
+                <div class="input-group-append">
+                    <span class="input-group-text bg-transparent text-primary">
+                        <i class="fa fa-search"></i>
+                    </span>
+                </div>
+            </div>
+        </form>
+    </div>
+       
+    <div class="col-lg-7 col-6 text-right">
+    
+     <a  class="btn btn-success" type="submit" href="{% url 'addproduct' %}">addproduct</a>
+        {% comment %} <button class="btn btn-success" data-toggle="modal" data-target="#addProductModal">Add Product</button> {% endcomment %}
+    </div>
+</div>
+
+
+<section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card mt-3">
+            <div class="card-body">
+
+              <!-- Default Table -->
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">P.ID</th>
+                    <th scope="col">IMAGE</th>
+                    <th scope="col">CATEGORY</th>
+                    <th scope="col">NAME</th>
+                    <th scope="col">DESCRIPTION</th>
+                    <th scope="col">Offer</th>
+                    <th scope="col">QUANTITY</th>
+                    <th scope="col">PRICE</th>
+                    {% comment %} <th scope="col">ACTIONS</th> {% endcomment %}
+                  </tr>
+                </thead>
+                <tbody>
+                {% for i in userproducts %}
+                  <tr>
+                    <th scope="row">{{i.id}}</th>
+                    <td scope="row"><img src="{{i.product_image.url}}" width="40px" height="40px" alt=""></td>                    <td>{{i.category}}</td>
+                    <td>{{i.product_name}}</td>
+                    <td>{{i.description}}</td>
+                    <td>{{i.offer.name}}</td>
+                    <td>{{i.product_quantity}}</td>
+                    <td>{{i.price}}</td>
+                    <td>
+                    <td>
+                      <a class="btn btn-primary me-2" href="{% url 'editproduct' i.id %}" role="button">Edit</a>
+                      <a class="btn btn-danger" href="{% url 'deleteproduct' i.id %}" role="button">{% if i.is_active %}
+                        Delete
+                      {% else %}
+                      Bring Back
+                      {% endif %}</a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+
+                </tbody>
+              </table>
+              <!-- End Default Table Example -->
+            </div>
+          </div>
+         </div>
+      </div>
+    </section>
+
+    
+
+        
+    <div class="card-body">
+
+       <!-- Pagination with icons -->
+       <nav aria-label="Page navigation example">
+         <ul class="pagination ">
+           <li class="page-item">
+             <a class="page-link" href="#" aria-label="Previous">
+               <span aria-hidden="true">&laquo;</span>
+             </a>
+           </li>
+           <li class="page-item"><a class="page-link" href="#">1</a></li>
+           <li class="page-item"><a class="page-link" href="#">2</a></li>
+           <li class="page-item"><a class="page-link" href="#">3</a></li>
+           <li class="page-item">
+             <a class="page-link" href="#" aria-label="Next">
+               <span aria-hidden="true">&raquo;</span>
+             </a>
+           </li>
+         </ul>
+       </nav><!-- End Pagination with icons -->
+
+     </div>
+          
+
+
+{% comment %} <!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+      <!-- Add Product Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="product_name">Product Name:</label>
+            <input type="text" class="form-control" id="product_name" name="product_name" required>
+          </div>
+          <div class="form-group">
+            <label for="image">Image:</label>
+            <input type="file" class="form-control-file" id="image" name="image" accept="image/*" required>
+          </div>
+          <div class="form-group">
+            <label for="category">Category:</label>
+            <input type="text" class="form-control" id="category" name="category" required>
+          </div>
+          <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" required>
+          </div>
+          <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="number" class="form-control" id="price" name="price" step="0.01" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Product</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div> {% endcomment %}
+ 
+
+
+{% endblock content %}
