@@ -11,3 +11,17 @@ body{
     background-color: rgba(245, 1, 172, 0.338);
     border-radius: 2%;
 }
+.profile-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f2f2f2;
+}
+
+.profile-logo i {
+    color: #333;
+    font-size: 24px;
+}

@@ -17,7 +17,7 @@ class Address(models.Model):
     zipcode = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
     
-    save_info = models.BooleanField(default=False)
+    save_info = models.BooleanField(default=True)
     default = models.BooleanField(default=False)
     use_default = models.BooleanField(default=False)
 

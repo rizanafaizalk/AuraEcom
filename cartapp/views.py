@@ -13,10 +13,14 @@ from .models import WishList
 def cart(request):
     cartdisplay = Cart.objects.filter(user=request.user)
     sub_total = 0
-    shipping_charge=40
+    min_shopin_price = 4000
+    shipping_charge=500
     for item in cartdisplay:
-        sub_total += item.product.price
-    grand_total = sub_total+shipping_charge
+        if item.product.offer:
+            sub_total += item.product.discounted_price
+        else:
+            sub_total += item.product.price
+    grand_total = sub_total
         
    
 
@@ -25,6 +29,7 @@ def cart(request):
         'sub_total': sub_total,
         'grand_total':grand_total,
         'shipping_charge' : shipping_charge,
+        'min_shopin_price':min_shopin_price
     }
     return render(request,'UserTemp/shoppingCart.html',context)
 

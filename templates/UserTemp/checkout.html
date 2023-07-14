@@ -214,6 +214,9 @@
                   <form action="{% url 'placeorder' %}" method="post">
                         {% csrf_token %}
                         {% for i in address %}
+                        {% if i.save_info %}
+                        
+                    
                             <div class="col-md-14 mb-3">
                             <div class="card mt-0">
                                 <div class="card-body">
@@ -250,6 +253,8 @@
                             </div>
                           </div>
                         </div>
+                        {% endif %}
+
                      {% endfor %}
                         
                     </div>
@@ -268,7 +273,12 @@
                         
                         <div class="d-flex justify-content-between">
                             <p>{{i.product.product_name}}</p>
+                            {% if i.product.offer %}
+                            <p>${{i.product.discounted_price}}</p>
+                            {% else %}
                             <p>${{i.product.price}}</p>
+                            {% endif %}
+                            
                         </div>
 
                         {% endfor %}

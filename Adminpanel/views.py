@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.db.models import DateField
 from django.forms import DateField
 from django.shortcuts import render,redirect
+from coupon.models import coupon
 from cartapp.models import Cart
 from django.db.models.functions import ExtractMonth
 from productapp.models import Product
@@ -227,7 +228,7 @@ def users(request):
     context = {}
     return render(request, 'AdminDashboard/users.html')
 
-def offer(request):
+def offer(request):#Edit offer
     if request.method == 'POST':
         offr_id = request.POST.get('offer_id')
         offr_name =  request.POST.get('name')
@@ -295,5 +296,80 @@ def update_status(request, order_item_id):
         order_item.status = status
         order_item.save()
         return redirect('orders')
+    
+def Coupon(request): #Edit Coupon
+    if request.method == 'POST':
+        copn_id = request.POST.get('coupon_id')
+        coupon_code = request.POST.get('code')
+        discount = request.POST.get('discount')
+        released_date = request.POST.get('released_date')
+        is_expired = request.POST.get('is_expired')
+        min_price = request.POST.get('min_price')
+        
+        coupn = coupon.objects.get(id=copn_id)
+
+        if coupon_code:
+            coupn.code = coupon_code
+        if discount:
+            coupn.discount =discount
+        if released_date:
+            coupn.released_date =released_date   
+        if is_expired:
+            coupn.is_expired =is_expired   
+        if min_price:
+            coupn.min_price =min_price
+            
+        coupn.save()
+        messages.success(request,'Coupon Updated')
+        return redirect('coupon')
+
+    
+    context = {'coupon': coupon.objects.all()}
+
+    return render(request, 'AdminDashboard/coupon.html',context)
+
+def addcoupon(request):
+    if request.method == 'POST':
+        coupon_code = request.POST.get('code')
+        discount = request.POST.get('discount')
+        released_date = request.POST.get('released_date')
+        is_expired = request.POST.get('is_expired')
+        min_price = request.POST.get('min_price')
+
+        if not released_date:
+            messages.success(request, 'Date Field cant be empty..!')
+            return redirect('coupon')
+        
+        if coupon_code:
+            coupon_code= coupon_code.strip()
+            exist = coupon.objects.filter(code= coupon_code)
+            if exist:
+                messages.success(request, 'Coupon code already exist..!')
+                return redirect('coupon')
+            if discount: 
+                coupon.objects.create(code=coupon_code, discount= discount, released_date= released_date, is_expired= is_expired, min_price = min_price)
+                return redirect('coupon') 
+            else:
+                messages.success(request, 'Please Specify a coupon code..!')
+                return redirect('coupon')  
+                    
+        else:
+            messages.success(request, 'coupon should have a name..!')
+            return redirect('coupon')
+        
+    context = {'coupon': coupon.objects.all()}
+    return render(request, 'AdminDashboard/coupon.html',context)
+def category(request):
+    context = {
+        
+    }
+    return render(request, 'AdminDashboard/category.html',context)
+
+def brand(request):
+    context = {
+        
+    }
+    return render(request, 'AdminDashboard/brand.html',context)
+
 
 

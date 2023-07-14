@@ -324,12 +324,6 @@ def logout(request):
     auth_logout(request)
     return redirect('Userhome')
 
-
-
 def forgot(request):
 
     return render(request, 'UserTemp/forgot.html')
-
-
-
-
