@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect,HttpResponseRedirect
-from requests import request
 # from django.views import View
 from .models import Address
 from django.contrib import messages
