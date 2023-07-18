@@ -142,11 +142,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email Notification 
 
-EMAIL_BACKEND = config('EMAIL_BACKEND')
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_PORT = config('EMAIL_PORT') 
-EMAIL_USE_TLS = True 
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Replace with your SMTP server address
+EMAIL_PORT = 587  # Replace with your SMTP server port
+EMAIL_USE_TLS = True  # Enable TLS (Transport Layer Security) for secure connection
+EMAIL_HOST_USER = 'rizanafaisal@gmail.com'  # Replace with your email address
+EMAIL_HOST_PASSWORD = 'sfgqostgkpmklytp'  # Replace with your email password
+DEFAULT_FROM_EMAIL = 'rizanafaisal@gmail.com'  # Replace with your email address
 

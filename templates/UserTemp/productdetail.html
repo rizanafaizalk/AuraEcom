@@ -43,7 +43,7 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
-                            <a href="index.html" class="nav-item nav-link">Home</a>
+                            <a href="{% url 'Userhome' %}" class="nav-item nav-link">Home</a>
                             <a href="{% url 'UserShop' %}" class="nav-item nav-link">Shop</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
@@ -71,7 +71,7 @@
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
             <h1 class="font-weight-semi-bold text-uppercase mb-3">Product Detail</h1>
             <div class="d-inline-flex">
-                <p class="m-0"><a href="">Home</a></p>
+                <p class="m-0"><a href="{% url 'Userhome' %}">Home</a></p>
                 <p class="m-0 px-2">-</p>
                 <p class="m-0">Shop Detail</p>
             </div>
@@ -209,7 +209,7 @@
                     </div>
                     <div class="dflex justify-content-between">
                     {% comment %} {% if product.quantity > 0 %} {% endcomment %}
-                    <a class="btn btn-primary px-3 addToCartBtn"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</a>
+                    <a class="btn btn-primary px-3 addToCartBtn" ><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</a>
                     {% comment %} {% endif %} {% endcomment %}
                     <a class="btn btn-primary px-3 addToWishlistBtn"><i class="fa fa-heart mr-1"></i> Add To Wishlist</a>
                     </div>
@@ -450,6 +450,7 @@ $('.increment-btn').click(function (e) {
 
     var inc_value = $(this).closest('.product_data').find('.qty-input').val();
     var value = parseInt(inc_value,10);
+    
     value = isNaN(value) ? 0 : value;
     if(value < 10)
     {
@@ -480,7 +481,7 @@ $('.addToCartBtn').on('click', function (e) {
     var product_id = $('.prod_id').val();
     
     var product_qty = $('.qty-input').val();
-    
+   
     var token = $('input[name=csrfmiddlewaretoken]').val();
     
     // var product_id = $(this).closest('.product_data').find('.prod_id').val(); same for all multiple products of home to add to cart

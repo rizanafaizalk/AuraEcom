@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import check_password
 
+from django.contrib.auth.decorators import login_required
+
 from .forms import addressform
 
 # Create your views here.
@@ -41,11 +43,16 @@ def deleteaddress(request,address_id):
     
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+@login_required(login_url='login')
 def profile(request):
+    if request.user:
+        context = { 'address' : Address.objects.filter(user=request.user)
+                  }
+        return render(request, 'UserTemp/profile.html',context)
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-    context = { 'address' : Address.objects.filter(user=request.user)
-               }
-    return render(request, 'UserTemp/profile.html',context)
+       
 
 
 def update_address(request,adrs_id):

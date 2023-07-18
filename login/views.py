@@ -106,6 +106,9 @@ def register(request):
                 messages.success(request,f'Account is created for {usr.email}')
                 UserOTP.objects.filter(user=usr).delete()
                 return redirect('Userhome')
+            elif usr.is_active == False:
+                usr.delete()
+                return render(request,'UserTemp/signup.html')
             else:
                 messages.warning(request,f'You Entered a wrong OTP')
                 return render(request,'UserTemp/signup.html',{'otp':True,'usr':usr})
@@ -189,13 +192,26 @@ def register(request):
                     }
                 messages.info(request,'Enter Strong Password')
                 return render(request,'UserTemp/signup.html',context)
-            else:
-                pass
+           
             if password1 == password2:
           
                 try:
-                    User.objects.get(email=email)
+                    usr=User.objects.filter(email=email)
                 except:
+                    usr = None    
+                if usr:
+                    context ={
+                        'pre_firstname' :firstname,
+                        'pre_lastname' :lastname,
+                        'pre_name':username,
+                        'pre_email':email,
+                        # 'pre_mobile':mobile,
+                        'pre_password1':password1,
+                        'pre_password2':password2,
+                    }
+                    messages.error(request,'user already exist')
+                    return render(request,'UserTemp/signup.html',context)
+                else:
                     usr = User.objects.create_user(first_name=firstname, last_name=lastname, username=username,email=email,password=password1)
                     usr.is_active=False
                     usr.save()
@@ -213,18 +229,7 @@ def register(request):
                     messages.info(request,'Enter the OTP that has been send to Your Email')
                     return render(request,'UserTemp/signup.html',{'otp':True,'usr':usr})
                     
-                else:
-                    context ={
-                        'pre_firstname' :firstname,
-                        'pre_lastname' :lastname,
-                        'pre_name':username,
-                        'pre_email':email,
-                        # 'pre_mobile':mobile,
-                        'pre_password1':password1,
-                        'pre_password2':password2,
-                    }
-                    messages.error(request,'user already exist')
-                    return render(request,'UserTemp/signup.html',context)
+            
             else:
                 context ={
                         'pre_firstname' :firstname,

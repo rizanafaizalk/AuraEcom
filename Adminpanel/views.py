@@ -16,6 +16,7 @@ from django.db.models.functions import TruncDay
 from coupon.models import Offer
 
 from django.db.models import Sum
+from django.contrib.auth.decorators import login_required
 
 from category.models import Category,Brand
 from django.shortcuts import render, get_object_or_404
@@ -24,15 +25,18 @@ from django.shortcuts import render, get_object_or_404
 from django.shortcuts import render
 
 # Create your views here.
+@login_required
 def home(request):
-    return render(request, 'AdminDashboard/home.html')
+    user = request.user
+    context = {'user' : user}
+    return render(request, 'AdminDashboard/home.html',context)
 
 # def dashboard(request):
 
 #    return render(request, 'AdminDashboard/dashboard.html')
 def dashboard(request):
     if not request.user.is_superuser:
-        return redirect('signin')
+        return redirect('login')
 
     delivered_items = OrderItem.objects.filter(status='Order Confirmed')
 
@@ -224,9 +228,34 @@ def orders(request):
     }
     return render(request,'AdminDashboard/orders.html', context)
 
+# Here Blocking user is done
 def users(request):
-    context = {}
-    return render(request, 'AdminDashboard/users.html')
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id') # Retrieve user_id from POST data
+        user_name = request.POST.get('name')
+
+        try:
+            user = User.objects.get(id=user_id)
+    
+            if user.is_active:
+                user.is_active=False
+                user.save()
+                messages.success(request,'User Blocked')#for notifying
+                return redirect('users')
+            else:
+                user.is_active=True
+                user.save()
+                messages.success(request,'User is Unblocked')#for notifying
+                return redirect('users')
+        
+        except User.DoesNotExist:
+            messages.error(request, 'User not found')
+        
+        return redirect('users')
+    
+    
+    context = {'user':User.objects.all()}
+    return render(request, 'AdminDashboard/users.html',context)
 
 def offer(request):#Edit offer
     if request.method == 'POST':
@@ -359,17 +388,134 @@ def addcoupon(request):
         
     context = {'coupon': coupon.objects.all()}
     return render(request, 'AdminDashboard/coupon.html',context)
+
 def category(request):
-    context = {
+    if request.method == 'POST':
+        cate_id = request.POST.get('category_id')
+        categry_name = request.POST.get('category_name')
+        cate_discrip = request.POST.get('category_discription')
         
-    }
+        cate = Category.objects.get(id=cate_id)
+
+        if categry_name:
+            cate.category_name = categry_name
+        if cate_discrip:
+            cate.category_discription =cate_discrip
+            
+        cate.save()
+        messages.success(request,'Category Updated')
+        return redirect('category')
+
+    
+    context = {'category': Category.objects.all()}
+
     return render(request, 'AdminDashboard/category.html',context)
 
-def brand(request):
-    context = {
+def addcategory(request):
+    if request.method == 'POST':
+        cate_name = request.POST.get('name')
+        discription = request.POST.get('discriptn')
+
+
+        if cate_name:
+            cate_name= cate_name.strip()
+            exist = Category.objects.filter(category_name=cate_name)
+            if exist:
+                messages.success(request, 'category code already exist..!')
+                return redirect('category')
+            if discription: 
+                Category.objects.create(category_name=cate_name, category_discription= discription)
+                return redirect('category') 
+            else:
+                messages.success(request, 'Please Specify a category name..!')
+                return redirect('category')  
+                    
+        else:
+            messages.success(request, 'category should have a name..!')
+            return redirect('category')
         
-    }
+    context = {'category': Category.objects.all()}
+    return render(request, 'AdminDashboard/category.html',context)
+
+
+def brand(request):
+    if request.method == 'POST':
+        brand_id = request.POST.get('brand_id')
+        brand_name = request.POST.get('name')
+        brand_addr = request.POST.get('brand_address')
+        brand_discrip = request.POST.get('discription')
+        
+        brnd = Brand.objects.get(id=brand_id)
+
+        if brand_name:
+            brnd.name = brand_name
+        if brand_addr:
+            brnd.brand_address =brand_addr
+        if brand_discrip:
+            brnd.discription =brand_discrip
+            
+        brnd.save()
+        messages.success(request,'Brand Updated')
+        return redirect('brand')
+
+    
+    context = {'brand': Brand.objects.all()}
+    
     return render(request, 'AdminDashboard/brand.html',context)
+
+def addbrand(request):
+    if request.method == 'POST':
+        brand_name = request.POST.get('name')
+        brand_addr = request.POST.get('address')
+        discription = request.POST.get('discriptn')
+
+
+        if brand_name:
+            brand_name= brand_name.strip()
+            exist = Brand.objects.filter(name=brand_name)
+            if exist:
+                messages.success(request, 'Brand name already exist..!')
+                return redirect('brand')
+            if discription: 
+                Brand.objects.create(name=brand_name,brand_address=brand_addr, discription= discription)
+                return redirect('brand') 
+            else:
+                messages.success(request, 'Please Specify a brand name..!')
+                return redirect('brand')  
+                    
+        else:
+            messages.success(request, 'brand should have a name..!')
+            return redirect('brand')
+        
+    context = {'category': Category.objects.all()}
+    return render(request, 'AdminDashboard/brand.html',context)
+
+def blockuser(request):
+    if request.method == 'POST':
+        brand_id = request.POST.get('brand_id')
+        brand_name = request.POST.get('name')
+        brand_addr = request.POST.get('brand_address')
+        brand_discrip = request.POST.get('discription')
+        
+        brnd = Brand.objects.get(id=brand_id)
+
+        if brand_name:
+            brnd.name = brand_name
+        if brand_addr:
+            brnd.brand_address =brand_addr
+        if brand_discrip:
+            brnd.discription =brand_discrip
+            
+        brnd.save()
+        messages.success(request,'User Blocked')
+        return redirect('blockuser')
+
+    
+    context = {'users': Brand.objects.all()}
+    
+    return render(request, 'AdminDashboard/users.html',context)
+
+    
 
 
 

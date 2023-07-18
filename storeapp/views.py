@@ -68,13 +68,19 @@ def Checkout(request):
     cartdisplay = Cart.objects.filter(user=request.user)
     address = Address.objects.filter(user=request.user)
     order = Order.objects.filter(user=request.user)
-    print(address,"daxo")
+   
     
     sub_total = 0
-    shipping_charge=40
+    shipping_charge = 0
+    
     for item in cartdisplay:
-        sub_total += item.product.price
-    grand_total = sub_total+shipping_charge
+        sub_total += item.total
+        
+    grand_total = sub_total
+
+    if grand_total<5000:
+         shipping_charge=500
+         grand_total+= shipping_charge
 
     context = {
         'cartitems' : cartdisplay,

@@ -36,6 +36,7 @@ class OrderItem(models.Model):
         ('Returned','Returned'),
     )
     status = models.CharField(max_length=150,choices=STATUS, default='Pending')
+    total = models.BigIntegerField(null=True, blank=True)
 
     def str(self):
         return '() ()'.format(self.order.id, self.order.tracking_no)

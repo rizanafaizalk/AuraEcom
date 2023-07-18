@@ -10,46 +10,42 @@
             <li class="breadcrumb-item active">Category</li>
             </ol>
             <a class="btn btn-secondary" href="" data-bs-toggle="modal"
-                data-bs-target="#productModal1">--Add New Offer--</a>
-            <!-- Add Offer Modal Start-->
+                data-bs-target="#productModal1">--Add New Category--</a>
+            <!-- Add Category Modal Start-->
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="text-center text-danger pt-3"></button>
+                <strong>{{message}}</strong>
+            </div>
+            {% endfor %}
+            {%endif%}
         
             <div class="modal fade" id="productModal1{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content p-3" >
                         <div class="modal-header">
-                            <h5 class="modal-title" id="productModalLabel">Edit Offer</h5>
+                            <h5 class="modal-title" id="productModalLabel">Add Category</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
         
                         <div class="modal-body">
-                            <form  method ="post" action="{% url 'addOffer' %}" enctype="multipart/form-data">
+                            <form  method ="post" action="{% url 'addcategory' %}" enctype="multipart/form-data">
                               {% csrf_token %}
         
                               
                               <div class="form-group">
                                
-                                <label for="dreamweaver" class="ml-2 mt-2" >Offer Name</label>
+                                <label for="dreamweaver" class="ml-2 mt-2" >Category Name</label>
                                 <input class="mx-3 form-control" type="text" name="name" value="" required >
                                 
                               </div>
                               <div class="form-group">
-                                <label for="dreamweaver" class="ml-2 mt-2" >Discount </label>
-                                <input class="mx-3 form-control" type="number" name="discount" value="" required >
+                                <label for="dreamweaver" class="ml-2 mt-2" >Category Discription</label>
+                                <input class="mx-3 form-control" type="text" name="discriptn" value="" required >
                                 
-                              </div>
-        
-                              <div class="form-group">
-                                <label for="dreamweaver" class="ml-2 mt-2" >Start Date</label>
-                                <input class="mx-3 form-control" type="Date" name="start_date" value="" required >
-                               
-                              </div>
-                              
-                              <div class="form-group">
-                                <label for="dreamweaver" class="ml-2 mt-2" >End Date</label>
-                                <input class="mx-3 form-control" type="Date" name="end_date" value="" required >
-                               
                               </div>
                           
                         </div>
@@ -62,15 +58,7 @@
                     </div>
         
             <!-- Add Offer Modal End -->
-    {% if messages %}
-
-    {% for message in messages %}
-
-        <div class="text-center text-danger pt-3"></button>
-            <strong>{{message}}</strong>
-        </div>
-    {% endfor %}
-    {%endif%}
+    
         </nav>
 </div><!-- End Page Title -->
 
@@ -83,22 +71,18 @@
           <table class="table">
             <thead>
               <tr>
-                <th scope="col">Offer.ID</th>
-                <th scope="col">Offer Name</th>
-                <th scope="col">Discount Percent</th>
-                <th scope="col">Start Date</th>
-                <th scope="col">End Date</th>
+                <th scope="col">Category.ID</th>
+                <th scope="col">Category Name</th>
+                <th scope="col">Category Discription</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
-              {% for item in offer %}
+              {% for item in category %}
               <tr>
                 <th scope="row">{{item.id}}</th>
-                <td>{{item.name}}</td>
-                <td>{{item.discount}}</td>
-                <td>{{item.start_date}}</td>
-                <td>{{item.end_date}}</td>
+                <td>{{item.category_name}}</td>
+                <td>{{item.category_discription}}</td>
 
                 <td> <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#productModal2{{forloop.counter}}">Edit</button> </td>
             
@@ -108,39 +92,27 @@
               <div class="modal-dialog" role="document">
                   <div class="modal-content">
                       <div class="modal-header">
-                          <h5 class="modal-title" id="productModalLabel">Edit Offer</h5>
+                          <h5 class="modal-title" id="productModalLabel">Edit Category</h5>
                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                           </button>
                       </div>
   
                       <div class="modal-body">
-                          <form  method ="post" action="{% url 'offer'  %}" enctype="multipart/form-data">
+                          <form  method ="post" action="{% url 'category'  %}" enctype="multipart/form-data">
                             {% csrf_token %}
   
                             
                             <div class="form-group">
-                              <input  type="number" name="offer_id" value="{{item.id}}" hidden >
-                              <label for="dreamweaver" class="ml-2 mt-2" >Offer Name</label>
-                              <input class="mx-3 form-control" type="text" name="name" value="{{item.name}}" required >
+                              <input  type="number" name="category_id" value="{{item.id}}" hidden >
+                              <label for="dreamweaver" class="ml-2 mt-2" >Category Name</label>
+                              <input class="mx-3 form-control" type="text" name="category_name" value="{{item.category_name}}" required >
                               
                             </div>
                             <div class="form-group">
-                              <label for="dreamweaver" class="ml-2 mt-2" >Discount </label>
-                              <input class="mx-3 form-control" type="number" name="discount" value="{{item.discount}}" required>
+                              <label for="dreamweaver" class="ml-2 mt-2" >Category Discription </label>
+                              <input class="mx-3 form-control" type="text" name="category_discription" value="{{item.category_discription}}" required>
                               
-                            </div>
-  
-                            <div class="form-group">
-                              <label for="dreamweaver" class="ml-2 mt-2" >Start Date: {{item.start_date}}</label>
-                              <input class="mx-3 form-control" type="Date" name="start_date" value="{{item.start_date}}" required >
-                             
-                            </div>
-                            
-                            <div class="form-group">
-                              <label for="dreamweaver" class="ml-2 mt-2" >End Date: {{item.end_date}}</label>
-                              <input class="mx-3 form-control" type="Date" name="end_date" value="{{item.end_date}}" required >
-                             
                             </div>
                         
                       </div>

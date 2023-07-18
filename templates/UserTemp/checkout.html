@@ -86,7 +86,7 @@
     
     {% if not cartitems %}
     
-    <h1>Congratulations order has been placed</h1>
+    <h1>Nothing in Cart, Please add products..!</h1>
 
 
     {% else %}
@@ -274,9 +274,9 @@
                         <div class="d-flex justify-content-between">
                             <p>{{i.product.product_name}}</p>
                             {% if i.product.offer %}
-                            <p>${{i.product.discounted_price}}</p>
+                            <p>${{i.total}}</p>
                             {% else %}
-                            <p>${{i.product.price}}</p>
+                            <p>${{i.total}}</p>   
                             {% endif %}
                             
                         </div>

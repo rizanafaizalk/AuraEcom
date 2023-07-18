@@ -57,10 +57,7 @@
                             {% comment %} <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
                             <a href="{% url 'logout' %}" class="nav-item nav-link">Logout</a> {% endcomment %}
                             {% if user.is_authenticated %}
-                                <form action="{% url 'logout' %}" method="POST">
-                                    {% csrf_token %}
-                                    <button type="submit" class="nav-item nav-link ">Logout</button>
-                                </form>
+                                    <a type="button" href="{% url 'logout' %}" class="nav-item nav-link ">Logout</a>
                             {% else %}
                                 <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
                             {% endif %}

@@ -97,6 +97,7 @@
 
                     
                         <tr>
+                            <input  type="number" name="offer_id" value="{{item.id}}" hidden >
                             <td class="align-middle"><img src="{{i.product.product_image.url}}" alt="" style="width: 50px;">&nbsp{{i.product.product_name}}</td>
                             {% if i.product.offer %}
                             <td class="align-middle">
@@ -112,7 +113,7 @@
                                         <i class="fa fa-minus"></i>
                                         </button>
                                     </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
+                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" value="{{i.product_quantity}}" disabled>
                                     <div class="input-group-btn">
                                         <button class="btn btn-sm btn-primary btn-plus">
                                             <i class="fa fa-plus"></i>
@@ -121,9 +122,9 @@
                                 </div>
                             </td>
                             {% if i.product.offer %}
-                            <td class="align-middle">${{i.product.discounted_price}}</td>
+                            <td class="align-middle">${{i.total}}</td>
                             {% else %}
-                            <td class="align-middle">${{i.product.price}}</td>
+                            <td class="align-middle">${{i.total}}</td>
                             {% endif %}
                             
                             <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>

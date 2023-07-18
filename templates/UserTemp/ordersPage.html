@@ -19,6 +19,13 @@
           </tr>
         </thead>
         <tbody>
+          {% if messages %}
+          {% for message in messages %}
+          <div class="text-center text-danger pt-3">
+            <strong>{{message}}</strong>
+          </div>
+          {% endfor %}
+          {%endif%}
           {% for item in orderlist %}
           <tr>
             <td>{{ item.created_at }}</td>

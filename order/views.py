@@ -18,7 +18,6 @@ from django.shortcuts import get_object_or_404
 
 # Create your views here.
 def placeorder(request):
-    print("ANZL!")
    
     if request.method == 'POST':
 
@@ -27,12 +26,16 @@ def placeorder(request):
         neworder = Order()
         neworder.user = request.user
         address_id = request.POST.get('address')
-        address = Address.objects.get(id=address_id)
+        if address_id:
+            address = Address.objects.get(id=address_id)
+        else:
+            messages.error(request,'Please select an Address..!!')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
         neworder.address = address
         neworder.payment_mode = request.POST.get('payment')
         
         neworder.payment_id = request.POST.get('payment_id')
-        print(neworder.payment_mode,"tttttttttttttttttttttttttttttttt")
         cart = Cart.objects.filter(user=request.user)
         cart_total_price = 0
         for item in cart:
@@ -41,10 +44,13 @@ def placeorder(request):
             #     cart_total_price = item.product.get_offer_price() * item.quantity
 
             # else:
-                cart_total_price += item.product.price * item.product_quantity
+                cart_total_price += item.total
             # item.product.stock-=item.quantity
         tax = (2*cart_total_price)/100
         neworder.total_price = cart_total_price + tax
+        if cart_total_price<5000:
+            neworder.total_price += 500
+
         trackno = random.randint(1111111, 9999999)
 
         while Order.objects.filter(tracking_no=trackno).exists():
@@ -72,11 +78,17 @@ def placeorder(request):
 
         neworderitems = Cart.objects.filter(user=request.user)
         for item in neworderitems:
+            if item.product.offer:
+                tot = item.product.offer_price()
+            else:
+                tot = item.product.price    
+
             OrderItem.objects.create(
                 order=neworder,
                 product=item.product,
-                price=item.product.price,
+                price=tot,
                 quantity=item.product_quantity,
+                total = tot*item.product_quantity
                 
             )
 
@@ -97,10 +109,11 @@ def placeorder(request):
         context={
             'order' : OrderItem.objects.filter(order=neworder),
         }
-    
-    return redirect('Checkout')
 
+    messages.error(request,'Order Placed..!!')
+    return redirect('UserOrdersPage')
 
+@login_required(login_url='login')
 def UserOrdersPage(request):
     orderlist=Order.objects.filter(user=request.user).order_by('-created_at')
     # order = Order.objects.filter(user=request.user)
