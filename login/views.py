@@ -136,13 +136,13 @@ def register(request):
                     messages.info(request,'some fields are empty')
                     return render(request,'UserTemp/signup.html',context)
                 
-            try :
-                uuser =User.objects.get(username=username)
-                if uuser:
-                        messages.info(request,'Username already taken, please try another')
-                        return render(request,'UserTemp/signup.html',context)
-            except:
-                uuser =None
+            
+            uuser =User.objects.filter(username=username)
+            if uuser:
+                messages.info(request,'Username already taken, please try another')
+                return redirect('signup')
+            
+                
 
             result = validate_name(username)
             if result is not False:
