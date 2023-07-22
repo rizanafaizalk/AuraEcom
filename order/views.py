@@ -46,8 +46,8 @@ def placeorder(request):
             # else:
                 cart_total_price += item.total
             # item.product.stock-=item.quantity
-        tax = (2*cart_total_price)/100
-        neworder.total_price = cart_total_price + tax
+        # tax = (2*cart_total_price)/100
+        neworder.total_price = cart_total_price  #+ tax
         if cart_total_price<5000:
             neworder.total_price += 500
 

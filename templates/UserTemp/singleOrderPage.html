@@ -117,6 +117,12 @@
                     <p><strong>Tracking No:</strong> {{ order.tracking_no }}</p>
                     <p><strong>Order Date:</strong> {{ order.created_at }}</p>
                     <p><strong>Payment Method:</strong> {{ order.payment_mode }}</p>
+                    <p><strong>Shipping:</strong> {% if item.total < 5000 %}
+                            
+                      Rs.{{500}}
+
+                      {% else %} Rs.{{0}}
+                      {% endif %}</p>
                     {% comment %} {% endfor %} {% endcomment %}
                 </div>
                 </div>

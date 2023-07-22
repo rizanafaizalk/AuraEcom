@@ -55,8 +55,13 @@
                             <a href="{% url 'UserOrdersPage' %}" class="nav-item nav-link">Orders</a>
                         </div>
                         <div class="navbar-nav ml-auto py-0">
-                            <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
-                            <a href="" class="nav-item nav-link">Register</a>
+                            {% if user.is_authenticated %}
+                                    {% csrf_token %}
+                                    <a type="submit" href="{% url 'logout' %}" class="nav-item nav-link ">Logout</a>
+                            {% else %}
+                                <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
+                            {% endif %}
+                            <a href="{% url 'signup' %}" class="nav-item nav-link">Register</a>
                         </div>
                     </div>
                 </nav>
@@ -153,7 +158,7 @@
                 <p class="mb-4">{{product.description}}</p>
                 
                 {% endif %}
-                
+{% comment %}                 
                 <div class="d-flex mb-3">
                     <p class="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
                     <form>
@@ -203,7 +208,7 @@
                             <label class="custom-control-label" for="color-5">Green</label>
                         </div>
                     </form>
-                </div>
+                </div> {% endcomment %}
                 <div class="d-flex align-items-center mb-4 pt-2 product_data">
                     {% comment %} <div class="input-group quantity mr-3" style="width: 130px;">
                         <div class="input-group-btn">
