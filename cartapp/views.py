@@ -163,5 +163,43 @@ def add_to_cart(request, wishlist_item_id):
     return redirect('wishList')  # Replace 'wishlist' with the URL name of your Wishlist page
 
 
+
+def increase_count(request):
+    prod_id = int(request.POST.get('prod_id'))
+    price =int(request.POST.get('prod_price'))
+       
+    cart_item = Cart.objects.get(id= prod_id)
+    if cart_item.product.offer:
+        price = int( cart_item.product.offer_price())
+    
+    if cart_item.product_quantity == cart_item.product.product_quantity:
+        messages.error(request, 'Maximum quantity reached..!!')
+        return JsonResponse({'message': 'Maximum quantity reached..!!',})
+    else:
+        cart_item.product_quantity+=1
+        cart_item.total += price
+        cart_item.save()
+        return JsonResponse({'message': 'Quantity increased..',})
+    
+    
+ 
+
+def decrease_count(request):
+    prod_id = int(request.POST.get('prod_id'))
+    price =int(request.POST.get('prod_price'))
+    
+    cart_item = Cart.objects.get(id= prod_id)
+    if cart_item.product.offer:
+        price = int( cart_item.product.offer_price())
+    if cart_item.product_quantity == 1:
+        cart_item.delete()
+        return JsonResponse({'message': 'Item removed',})
+    else:
+        cart_item.total -= price
+        cart_item.product_quantity-=1
+        cart_item.save()
+        return JsonResponse({'message': 'Quantity decreased..',})    
+
+
   
         

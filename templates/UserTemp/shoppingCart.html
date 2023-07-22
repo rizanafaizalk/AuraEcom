@@ -1,6 +1,9 @@
 {% extends 'UserTemp/base.html'%}
 {% load static %}
 {% block content %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
 <!-- Navbar Start -->
     <div class="container-fluid">
         <div class="row border-top px-xl-5">
@@ -79,7 +82,7 @@
 
 
     <!-- Cart Start -->
-    <div class="container-fluid pt-5">
+    <div class="container-fluid pt-5 cartdata">
         <div class="row px-xl-5">
             <div class="col-lg-8 table-responsive mb-5">
                 <table class="table table-bordered text-center mb-0 delete">
@@ -108,17 +111,14 @@
                             <td class="align-middle">RS.{{i.product.price}}</td>
                             {% endif %}
                             <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" value="{{i.product_quantity}}" disabled>
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
+                                <div class="col-md-3 product_data">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ product.id }}" class="prod_id">
+                                    <label for="Quantity"></label>
+                                    <div class="input-group-text-center mb-3" style="width:60px;">
+                                        <button class="input-group-text decrement-btn changeQuantity" data-prod_price='{{i.product.price}}' data-prod_id='{{i.id}}' data-func=2>-</button>
+                                        <input type="text" name="quantity" id="quantity" class="form-control qty-input text-center" value="{{i.product_quantity}}">
+                                        <button class="input-group-text increment-btn changeQuantity" data-prod_price='{{i.product.price}}' data-prod_id='{{i.id}}' data-func=1>+</button>
                                     </div>
                                 </div>
                             </td>
@@ -172,7 +172,7 @@
                             <h5 class="font-weight-bold">Total</h5>
                             <h5 class="font-weight-bold">Rs.{{grand_total}}</h5>
                         </div>
-                        <a class="btn btn-block btn-primary my-3 py-3"  href="{% url 'Checkout' %}">Proceed To Checkout</a>
+                        {% comment %} <a class="btn btn-block btn-primary my-3 py-3"  href="{% url 'Checkout' %}">Proceed To Checkout</a> {% endcomment %}
                     </div>
                 </div>
             </div>
@@ -207,6 +207,8 @@ $(document).ready(function () {
         // dataType:"dateType",
         success: function (response){
             alertify.success(response.status)
+            location.reload()
+
             //$('.delete').load(location.href + " .delete");
             cartItem.remove(); // Remove the deleted item from the DOM
 
@@ -215,8 +217,42 @@ $(document).ready(function () {
 
     });
 
+
+  $(document).on('click', '.changeQuantity', function(e) {
+    var prod_id = $(this).data('prod_id');
+    var prod_price = $(this).data('prod_price');
+    var func = $(this).data('func');
     
+
+    var url = '';
+    if (func == 1) {
+      url = "/cartapp/increase_count/";
+    } else if (func == 2) {
+      url = "/cartapp/decrease_count/";
+    } else{
+        url = "/cartapp/cart_remove/";
+    }
+
+    $.ajax({
+      method: "POST",
+      url: url,
+      data: {
+        'prod_id': prod_id,
+        'prod_price': prod_price,
+        csrfmiddlewaretoken: '{{csrf_token}}'
+      },
+      success: function(response) {
+        console.log(response);
+        alertify.success(response.message);
+        $('.cartdata').load(location.href + " .cartdata");
+
+         
+
+      }
+    });
+  });
 });
+
 
 </script>
 {% endblock content%}

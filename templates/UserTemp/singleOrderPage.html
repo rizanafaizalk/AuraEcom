@@ -54,9 +54,14 @@
                             <a href="{% url 'UserOrdersPage' %}" class="nav-item nav-link">Orders</a>
                         </div>
                         <div class="navbar-nav ml-auto py-0">
-                            <a href="" class="nav-item nav-link">Login</a>
-                            <a href="" class="nav-item nav-link">Register</a>
-                        </div>
+                          {% if user.is_authenticated %}
+                                  {% csrf_token %}
+                                  <a type="submit" href="{% url 'logout' %}" class="nav-item nav-link ">Logout</a>
+                          {% else %}
+                              <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
+                          {% endif %}
+                          <a href="{% url 'signup' %}" class="nav-item nav-link">Register</a>
+                      </div>
                     </div>
                 </nav>
             </div>
