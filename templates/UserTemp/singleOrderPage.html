@@ -90,7 +90,7 @@
           </ol>
         </nav>
       </div> {% endcomment %}
-      
+      <a class="btn btn-secondary print">Invoice download</a>
     <div class="container pb-4">
         <div class="d-flex ">
             <!-- <div class="col-md-6"> -->
@@ -309,6 +309,44 @@
     crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
+
+
+<script>
+    $(document).ready(function () {
+      
+      $('.print').on('click', function (e) {
+          e.preventDefault();
+          print('product_id')
+          var token = $('input[name=csrfmiddlewaretoken]').val();
+          console.log('Product id')
+          
+          // var product_id = $(this).closest('.product_data').find('.prod_id').val(); same for all multiple products of home to add to cart
+      
+          $.ajax({
+              method: "POST",
+              url: "/order/print/",
+              data: {
+                  'product_id':product_id,
+                  csrfmiddlewaretoken: token
+              },
+              // dataType:"dateType",
+              success: function (response){
+                  console.log(response)
+                  alertify.success(response.status)
+      
+              }
+          });
+      
+      });
+      
+  });
+  
+  </script>
 
     {% endblock content %}  

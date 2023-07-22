@@ -12,6 +12,7 @@ urlpatterns = [
 
 
     path('proceedtopay/',views.proceedtopay, name="proceedtopay"),
+    path('print/',views.print, name="print"),
 
     
 

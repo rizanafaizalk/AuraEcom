@@ -192,5 +192,6 @@ def proceedtopay(request):
     return JsonResponse({
          'grand_total' : grand_total
     })
-
+def print(request):
+    pass
 

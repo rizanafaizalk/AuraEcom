@@ -24,7 +24,12 @@
           {% for item in orderlist %}
           <tr>
             <td>{{ item.created_at }}</td>
-            <td>{{ item.total_price }}</td>
+            <td>{% if item.total_price < 500 %}
+              Order Cancelled/Returned 
+            
+            {% else %}
+            {{ item.total_price }}
+            {% endif %}</td>
             <td>{{ item.tracking_no }}</td>
             {% comment %} <td>{{ item.status }}</td> {% endcomment %}
             <td>
