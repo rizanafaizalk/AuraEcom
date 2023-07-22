@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib import messages
 
 from productapp.models import Product
-from .models import Order
+from .models import Order, Returned
 from .models import OrderItem
 from cartapp.models import Cart
 from userprofile.models import Address
@@ -98,7 +98,7 @@ def placeorder(request):
             # payment_mode = request.POST.get('payment_method')
 
             payment_mode = request.POST.get('payment') 
-            if (payment_mode == 'Razorpay'):
+            if payment_mode == 'Razorpay':
                 Cart.objects.filter(user=request.user).delete()
                 return JsonResponse({'status' : "Your order has been succesfully placed"})
 
@@ -142,20 +142,44 @@ def cancel_order(request,order_item_id):
    ord_prod = OrderItem.objects.get(id=order_item_id)
 
    ord_prod.status = 'Cancelled' 
-   if ord_prod.order_id.mode_of_payment != "COD":
-        customer.wallet = customer.wallet + ord_prod.amount
-   ord_prod.product.quantity += ord_prod.quantity
-   ord_prod.order_id.total_amount -= ord_prod.amount
-   ord_prod.order_id.save()
+   if ord_prod.order.payment_mode != "cod":
+        customer.wallet = customer.wallet + ord_prod.total
+   ord_prod.product.product_quantity += ord_prod.quantity
+   ord_prod.order.total_price -= ord_prod.total
+   ord_prod.order.save()
    ord_prod.product.save()
    ord_prod.save()
    customer.save()
 
 
    messages.error(request,'Order Cancelled..!!')
-   if ord_prod.order_id.mode_of_payment != "COD":
+   if ord_prod.order.payment_mode != "cod":
         messages.error(request,'Amount Refunded to your Wallet..!!')
    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def return_item(request):
+    if request.method == 'POST':
+        ord_id = request.POST.get('item')
+        reason = request.POST.get('return_reason')
+        note = request.POST.get('return_comment')
+        
+        return_product = OrderItem.objects.get(id=ord_id)
+        Returned.objects.create(returned_product = return_product, reason = reason, comments = note)
+        
+        return_product.status = 'Returned'
+    
+        request.user.wallet += return_product.total
+        
+        return_product.save()
+        request.user.save()
+        
+        if reason == 'Ordered by mistake' or reason == 'Wrong item':
+            return_product.product.product_quantity += return_product.quantity
+            return_product.product.save()
+        
+        
+        messages.error(request,'Item return initiated, will be processed in 2 days, please see the amount in your Wallet..')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def proceedtopay(request):
     cart = Cart.objects.filter(user=request.user)

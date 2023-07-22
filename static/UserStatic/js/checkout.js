@@ -26,7 +26,7 @@ $(document).ready(function () {
         // }
         if(!address)
         {
-            alert("address mandatory")
+            swal("Alert!", "Address required!", "error");
             return false;
         }
         else

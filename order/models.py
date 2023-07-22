@@ -44,3 +44,9 @@ class OrderItem(models.Model):
 class UsedCoupon(models.Model):
     coupon_used = models.CharField(max_length=50,unique=True,null=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE,blank=True,null=True)
+
+
+class Returned(models.Model):
+    returned_product =  models.ForeignKey(OrderItem, on_delete=models.CASCADE, blank=True, null=True)  
+    reason           =   models.CharField(max_length=50, blank=True,null=True)
+    comments         =  models.CharField(max_length=250, blank=True,null=True)    

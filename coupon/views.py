@@ -74,7 +74,8 @@ def apply_coupon(request):
                     if cart_items:
                         grand_total = sum(item.product.price * item.product_quantity for item in cart_items)
                         shipping_price = 40
-                        grand_total=grand_total+shipping_price
+                        if grand_total<5000:
+                            grand_total=grand_total+shipping_price
                         oupon = coupon_exists.get()
                         grand_total=grand_total-oupon.discount
                         

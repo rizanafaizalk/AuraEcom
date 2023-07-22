@@ -4,13 +4,13 @@
 
 <head>
     <meta charset="utf-8">
-    <title>EShopper - Bootstrap Shop Template</title>
+    <title>AuraEcom</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
 
     <!-- Favicon -->
-    <link href="{% static 'UserStatic/img/favicon.ico' %}" rel="icon">
+    <link href="{% static 'UserStatic/img/Logooo.png' %}" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -66,14 +66,10 @@
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
-                <form action="">
+                <form action="{% url 'product_search' %}" method="GET">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for products">
-                        <div class="input-group-append">
-                            <span class="input-group-text bg-transparent text-primary">
-                                <i class="fa fa-search"></i>
-                            </span>
-                        </div>
+                        <input type="text" name="key" class="form-control" placeholder="Search for products">
+                        <input type="submit" value="Search">
                     </div>
                 </form>
             </div>
@@ -92,8 +88,14 @@
                     <span class="badge">{{user.username}}</span>
                 </a>
             </div>
-            
         </div>
+        {% if messages %}
+            {% for message in messages %}
+            <div class="text-center text-danger pt-3">
+                <strong>{{message}}</strong>
+            </div>
+            {% endfor %}
+        {%endif%}
     </div>
     <!-- Topbar End -->
 
@@ -110,7 +112,7 @@
         <div class="row px-xl-5 pt-5">
             <div class="col-lg-4 col-md-12 mb-5 pr-3 pr-xl-5">
                 <a href="" class="text-decoration-none">
-                    <h1 class="mb-4 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border border-white px-3 mr-1">E</span>Shopper</h1>
+                    <h1 class="mb-4 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border border-white px-3 mr-1">E</span>AuraEcom</h1>
                 </a>
                 <p>Dolore erat dolor sit lorem vero amet. Sed sit lorem magna, ipsum no sit erat lorem et magna ipsum dolore amet erat.</p>
                 <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>123 Street, New York, USA</p>

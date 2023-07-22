@@ -52,7 +52,7 @@
                    <td>{{item.username}}</td>
                    <td>{{item.email}}</td>
                    <td>{{item.phone}}</td>
-                   <td>{{item.is_active}}</td>
+                   <td>{% if item.is_active %}Active {% else %}Blocked {% endif %}</td>
    
                    <td> <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#productModal2{{forloop.counter}}">  {% if item.is_active %}
                     Block

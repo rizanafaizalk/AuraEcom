@@ -90,69 +90,52 @@
     <div class="container-fluid pt-5">
         <div class="row px-xl-5">
             <div class="col-lg-8 table-responsive mb-5 wishlistdata">
-                <table class="table table-bordered text-center mb-0">
+                <table class="table table-bordered text-center mb-0 wish">
                     <thead class="bg-secondary text-dark">
                         <tr>
                             <th>Products</th>
                             <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
+                            <th>AddToCart</th>
                             <th>Remove</th>
                         </tr>
                     </thead>
-                    <tbody class="align-middle">
-                 {% if wishlist %}
-                    {% for i in wishlist %}
-
-                    
-                        <tr>
-                            <td class="align-middle"><img src="{{i.product.product_image.url}}" alt="" style="width: 50px;">{{i.product.product_name}}</td>
-                            <td class="align-middle">${{i.product.price}}</td>
-                            <td class="align-middle">
-                                {% comment %} <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div> {% endcomment %}
-                                <div class="col-md-3 product_data">
-                                  {% csrf_token %}
-                                  <input type="hidden" value="{{ product.id }}" class="prod_id">
-                                  <label for="Quantity">Quantity</label>
-                                  <div class="input-group-text-center mb-3" style="width:60px;">
-                                     <button class="input-group-text decrement-btn">-</button>
-                                     <input type="text" name="quantity" id="quantity" class="form-control qty-input text-center" value="1">
-                                     <button class="input-group-text increment-btn">+</button>
-                                  </div>
-                              </div>
-                            </td>
-                            <td class="align-middle">${{i.product.price}}</td>
-                            <td class="align-middle delete-wishlist-item"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-                        </tr>
-                    {% endfor %}  
+                    <tbody class="align-middle ">
+                        {% if wishlist %}
+                            {% for item in wishlist %}
+                                <tr >
+                                    <td class="align-middle"><img src="{{ item.product.product_image.url }}" alt="" style="width: 50px;">{{ item.product.product_name }}</td>
+                                    <td class="align-middle">Rs.{{ item.product.price }}</td>
+                                    
+                                    <td class="align-middle">
+                                        {% csrf_token %}
+                                        <a class="btn btn-sm btn-primary white-button addToCartBtn" data-prod_id='{{ item.product.id }}'>
+                                            <i class="fa fa-shopping-cart mr-1"></i>Add To Cart
+                                        </a>
+                                    </td>
+                                    
+                                    <td class="align-middle">
+                                        <a class="btn btn-primary delete_wishlist_item" data-prod_id='{{ item.id }}'>
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4">Your Wishlist is Empty</td>
+                            </tr>
+                        {% endif %}
                     </tbody>
                 </table>
-              </div>
-              <div class="col-lg-4">
-                
-                
-                {% else %}
-                    <h4>Your wishlist is empty <h4>
-                {% endif %}
+            </div>
+            <div class="col-lg-4">
+                <!-- Additional content for the right column, if needed -->
             </div>
         </div>
     </div>
-
+    
     <!-- wishlist End -->
 
-{% endblock content %}
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -160,16 +143,18 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
 
-    <script>
+
+<script>
 
 
 $(document).ready(function () {
-    $('.delete-wishlist-item').click(function (e) {
-        e.preventDefault();
+    $('.delete_wishlist_item').click(function (e) {
+        var wishlistItem = $(this).closest('tr');
+        console.log('hii')
+        var product_id = $(this).data('prod_id');
 
-        var product_id = $(this).closest('.product_data').find('.prod_id').val();
         var token = $('input[name=csrfmiddlewaretoken]').val();
-
+        console.log(product_id,token)
         $.ajax({
         method: "POST",
         url: "/cartapp/DeleteWishlistItem/",
@@ -180,11 +165,44 @@ $(document).ready(function () {
         // dataType:"dateType",
         success: function (response){
             alertify.success(response.status)
-            $('.wishlistdata').load(location.href + " .wishlistdata");
+            //$('.wish').load(location.href + " .wish");
+            wishlistItem.remove(); // Remove the deleted item from the DOM
+
 
         }
     });
 
-
     });
+
+    $('.addToCartBtn').on('click', function (e) {
+        e.preventDefault();
+        var product_qty = 1;
+        var product_id = $(this).data('prod_id');
+        //print('product_id')
+        var token = $('input[name=csrfmiddlewaretoken]').val();
+        console.log('Product id',product_id,product_qty)
+        
+        // var product_id = $(this).closest('.product_data').find('.prod_id').val(); same for all multiple products of home to add to cart
+    
+        $.ajax({
+            method: "POST",
+            url: "/cartapp/addtocart/",
+            data: {
+                'product_id':product_id,
+                'product_qntty':product_qty,
+                csrfmiddlewaretoken: token
+            },
+            // dataType:"dateType",
+            success: function (response){
+                console.log(response)
+                alertify.success(response.status)
+    
+            }
+        });
+    
+    });
+    
 });
+
+</script>
+{% endblock content %}

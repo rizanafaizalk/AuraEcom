@@ -1,13 +1,17 @@
+import queue
 from django.shortcuts import render
 from order.models import Order
 from userprofile.models import Address
 from cartapp.models import Cart
+from category.models import Brand,Category
 
 from productapp.models import Product
 from django.contrib.auth.decorators import login_required
 
 from django.core.paginator import Paginator
+from django.db.models import Q
 
+from django.contrib import messages
 
 # Create your views here.
 
@@ -23,9 +27,63 @@ def UserShop(request):
     paged_product = paginator.get_page(page)
 
     context = {
+        'brands' : Brand.objects.all(),
+        'category' : Category.objects.all(),
         'products' : paged_product
     }
     return render(request, 'UserTemp/shop.html',context)
+
+# Product Search
+def product_search(request):
+    key = request.GET.get('key')
+    print('hai key')
+    context = {
+             'category': Category.objects.all(),
+            'products':Product.objects.filter(Q(brand__name__icontains=key) |Q(product_name__icontains=key) | Q(description__icontains=key) | Q(category__category_name__icontains=key) | Q(discounted_price__icontains=key)),
+            'brands' : Brand.objects.all()
+        }
+    print(key,'hai key')
+    messages.error(request,"Products matching : "+key)
+    return render(request,"UserTemp/shop.html",context)
+# filter by  Category
+def filter_category(request, cat):
+    key = Category.objects.get(id=cat)
+    print('hai cate')
+    context = {
+            'category': Category.objects.all().order_by('id'),
+            'brands' : Brand.objects.all(),
+            'products': Product.objects.filter(category=key)
+
+            
+        }
+    print(key,'hai key')
+    messages.error(request,"Products matching Category: "+key.category_name)
+    return render(request,"UserTemp/shop.html",context)
+# filter by  Brand
+def filter_brand(request, brnd):
+    key = Brand.objects.get(id=brnd)
+    context = {
+            'category': Category.objects.all(),
+            'brands' : Brand.objects.all().order_by('id'),
+            'products': Product.objects.filter(brand=key)
+
+            
+        }
+    messages.error(request,"Products matching Brand: "+key.name)
+    return render(request,"UserTemp/shop.html",context)
+# filter by  Price
+def filter_price(request, prce):
+    key = Product.objects.get(id=prce)
+    context = {
+            'category': Category.objects.all(),
+            'brands' : Brand.objects.all().order_by('id'),
+            'products': Product.objects.filter(brand=key)
+
+            
+        }
+    messages.error(request,"Products matching Brand: "+key.price)
+    return render(request,"UserTemp/shop.html",context)
+
 
 
 

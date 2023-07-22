@@ -106,9 +106,6 @@ def register(request):
                 messages.success(request,f'Account is created for {usr.email}')
                 UserOTP.objects.filter(user=usr).delete()
                 return redirect('Userhome')
-            elif usr.is_active == False:
-                usr.delete()
-                return render(request,'UserTemp/signup.html')
             else:
                 messages.warning(request,f'You Entered a wrong OTP')
                 return render(request,'UserTemp/signup.html',{'otp':True,'usr':usr})

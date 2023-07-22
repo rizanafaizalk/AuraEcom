@@ -173,12 +173,10 @@ def editproduct(request,prod_id):
         except:
             offer = None   
         
-        if name == ""or price =="":
+        if name == ""or price =="" or qty=="":
             messages.error(request,'Name or Price field are empty')
             return redirect('product')
-        if not (image1,image2,image3,image4):
-            messages.error(request,'Image not uploaded')
-            return redirect('product')
+        
         print(brand_name,'daxoooooooooo')
         # Validaiton
         # if Product.objects.filter(product_name=name).exclude(id=prod_id).exists():
@@ -188,10 +186,14 @@ def editproduct(request,prod_id):
 
         prduct=Product.objects.get(id=prod_id)
         prduct.product_name =name
-        prduct.product_image=image1
-        prduct.product_image1=image2
-        prduct.product_image2=image3
-        prduct.product_image3=image4
+        if image1:
+            prduct.product_image=image1
+        if image2:
+            prduct.product_image1=image2
+        if image3:
+            prduct.product_image2=image3
+        if image4:
+            prduct.product_image3=image4
         prduct.product_quantity =qty
         prduct.price = price
         prduct.description = description
@@ -221,7 +223,7 @@ def orderdelete(requesti,id):
     return redirect('orders')
 
 def orders(request):
-    orderitemslist = OrderItem.objects.all()
+    orderitemslist = OrderItem.objects.all().order_by('-id')
     context = {
         'OrderitemList' : orderitemslist
 
